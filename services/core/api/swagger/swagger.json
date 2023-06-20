@@ -1,0 +1,30 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API Router",
+        "title": "Swagger Router API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:6001",
+    "basePath": "/api/v1",
+    "paths": {
+        "/ping": {
+            "get": {
+                "description": "get pong",
+                "tags": [
+                    "ping"
+                ],
+                "summary": "Ping handler",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

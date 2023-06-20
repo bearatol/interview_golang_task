@@ -4,6 +4,15 @@ export $(shell sed 's/=.*//' .env_example)
 
 PROJECTNAME=$(shell basename "$(PWD)")
 
+.PHONY: run
+run:
+	docker compose -f docker-compose.yml up -d --build
+
+.PHONY: run-local
+run-local:
+	docker compose -f docker-compose.yml up -d --build price_generator auth_generator interview_db && \
+	go run services/core/main.go --local
+
 .PHONY: go-tidy
 go-tidy:
 	cd ./pkg && go mod tidy -e && cd .. && \
@@ -23,7 +32,7 @@ protoc:
 
 .PHONY: swag
 swag:
-	swag init -d ./services/core -o ./services/core/api  -g internal/handler/handler.go
+	swag init -d ./services/core -o ./services/core/api/swagger  -g internal/handler/handler.go
 
 
 .PHONY: help

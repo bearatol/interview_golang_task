@@ -13,9 +13,8 @@ networks:
 services:
   core:
     build:
-      dockerfile: .
+      dockerfile: ./Dockerfile
       context: ./services/core
-    container_name: core
     restart: always
     ports:
       - 6001:6001
@@ -30,7 +29,7 @@ services:
     env_file: .env_example
   price_generator:
     build:
-      dockerfile: .
+      dockerfile: ./Dockerfile
       context: ./services/price_generator
     container_name: price_generator
     restart: always

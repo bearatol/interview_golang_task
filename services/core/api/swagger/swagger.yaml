@@ -1,0 +1,20 @@
+basePath: /api/v1
+host: localhost:6001
+info:
+  contact: {}
+  description: API Router
+  title: Swagger Router API
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      description: get pong
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Ping handler
+      tags:
+      - ping
+swagger: "2.0"
