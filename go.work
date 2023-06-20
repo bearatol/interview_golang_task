@@ -1,0 +1,13 @@
+go 1.20
+
+use(
+    ./services/core
+    ./services/price_generator
+    ./pkg
+    ./proto
+)
+
+
+replace github.com/bearatol/interview_golang_task/pkg v0.0.0 => ./pkg
+
+replace github.com/bearatol/interview_golang_task/proto v0.0.0 => ./proto

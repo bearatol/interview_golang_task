@@ -1,0 +1,57 @@
+version: '3.8'
+
+name: "interview"
+
+networks:
+  net_price_gen:
+    driver: bridge
+  net_auth_gen:
+    driver: bridge
+  net_db:
+    driver: bridge
+
+services:
+  core:
+    build:
+      dockerfile: .
+      context: ./services/core
+    container_name: core
+    restart: always
+    ports:
+      - 6001:6001
+    networks:
+      - net_price_gen
+      - net_auth_gen
+      - net_db
+    depends_on:
+      - price_generator
+      - auth_generator
+      - interview_db
+    env_file: .env_example
+  price_generator:
+    build:
+      dockerfile: .
+      context: ./services/price_generator
+    container_name: price_generator
+    restart: always
+    ports:
+      - 6002:6002
+    networks:
+      - net_price_gen
+    env_file: .env_example
+  auth_generator:
+    image: andrianovartemii/gm-test-task-auth-generator:latest
+    ports:
+      - 6003:8080
+    networks:
+      - net_auth_gen
+    env_file: .env_example
+  interview_db:
+    image: postgres:15.1-alpine3.17
+    container_name: interview_db
+    restart: always
+    ports:
+      - 6004:5432
+    networks:
+      - net_db
+    env_file: .env_example

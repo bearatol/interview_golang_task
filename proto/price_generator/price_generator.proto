@@ -1,0 +1,19 @@
+syntax="proto3";
+
+import "google/protobuf/empty.proto";
+package price_generator;
+
+option go_package = "github.com/bearatol/interview_golang_task/proto/price_generator";
+
+// ------------------
+// Ping
+// ------------------
+
+message Pong {
+    string pong = 1;
+}
+
+
+service PriceGenerator {
+    rpc Ping (google.protobuf.Empty) returns (Pong) {}
+}
