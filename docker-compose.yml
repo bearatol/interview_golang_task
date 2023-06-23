@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 name: "interview"
 
@@ -37,14 +37,19 @@ services:
       - 6002:6002
     networks:
       - net_price_gen
+    volumes:
+      - ./upload/price_pdf_files:/app/upload/price_pdf_files
+      - ./docs/price_generator:/app/docs/price_generator
     env_file: .env_example
   auth_generator:
-    image: andrianovartemii/gm-test-task-auth-generator:latest
+    image: andrianovartemii/gm-test-task-auth-generator:amd
+    container_name: auth_generator
     ports:
       - 6003:8080
     networks:
       - net_auth_gen
     env_file: .env_example
+    platform: linux/arm64/v8
   interview_db:
     image: postgres:15.1-alpine3.17
     container_name: interview_db

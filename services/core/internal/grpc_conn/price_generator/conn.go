@@ -19,7 +19,8 @@ func Close(conn *grpc.ClientConn) {
 }
 
 type Service struct {
-	Conn *grpc.ClientConn
+	Conn      *grpc.ClientConn
+	PriceFile *priceFile
 }
 
 func NewConn(addr string) (*Service, error) {
@@ -29,7 +30,8 @@ func NewConn(addr string) (*Service, error) {
 	}
 
 	return &Service{
-		Conn: conn.conn,
+		Conn:      conn.conn,
+		PriceFile: NewPriceFile(conn),
 	}, nil
 }
 

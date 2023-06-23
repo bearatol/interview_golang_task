@@ -1,15 +1,17 @@
-DIR=$(shell pwd)
 include .env_example
 export $(shell sed 's/=.*//' .env_example)
-
-PROJECTNAME=$(shell basename "$(PWD)")
 
 .PHONY: run
 run:
 	docker compose -f docker-compose.yml up -d --build
 
+COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose -f docker-compose.test.yml up -d --build
+
 .PHONY: run-local
 run-local:
+	COMPOSE_DOCKER_CLI_BUILD=1 \
+	DOCKER_BUILDKIT=1 \
+	DOCKER_DEFAULT_PLATFORM=linux/amd64 \
 	docker compose -f docker-compose.yml up -d --build price_generator auth_generator interview_db && \
 	go run services/core/main.go --local
 

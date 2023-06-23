@@ -9,10 +9,11 @@ import (
 
 	"github.com/bearatol/interview_golang_task/pkg/logger"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/config"
-	"github.com/bearatol/interview_golang_task/sevices/core/internal/grpc_conn/price_generator"
+	priceGenRepo "github.com/bearatol/interview_golang_task/sevices/core/internal/grpc_conn/price_generator"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/handler"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/repository"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/repository/postgres"
+	authGenRepo "github.com/bearatol/interview_golang_task/sevices/core/internal/rest_conn/auth_generator"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/service"
 	"go.uber.org/zap"
 )
@@ -59,13 +60,15 @@ func run(ctx context.Context, conf *config.Config, log *zap.SugaredLogger) error
 
 	repo := repository.NewRepository(db)
 
-	priceGen, err := price_generator.NewConn(conf.PriceGenAdd)
+	priceGen, err := priceGenRepo.NewConn(conf.PriceGenAdd)
 	if err != nil {
 		return err
 	}
 	defer priceGen.Conn.Close()
 
-	serv := service.NewService(repo, priceGen)
+	authGen := authGenRepo.NewAuthGenerator(conf.AuthGenAddr)
+
+	serv := service.NewService(repo, priceGen.PriceFile, authGen)
 	handl := handler.NewHandler(ctx, log, serv)
 	router := handl.SetupRouter()
 

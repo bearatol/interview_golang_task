@@ -10,6 +10,7 @@ type Config struct {
 	DB *Postgres
 
 	PriceGenAdd string
+	AuthGenAddr string
 	AppAddr     string
 }
 
@@ -74,6 +75,15 @@ func NewConfig(local bool) (*Config, error) {
 	if local {
 		if config.PriceGenAdd, exist = os.LookupEnv("PRICE_GENERATOR_ADDR_LOCAL"); !exist {
 			return nil, errors.New("the env [PRICE_GENERATOR_ADDR_LOCAL] does not exist")
+		}
+	}
+
+	if config.AuthGenAddr, exist = os.LookupEnv("AUTH_GENERATOR_ADDR"); !exist {
+		return nil, errors.New("the env [AUTH_GENERATOR_ADDR] does not exist")
+	}
+	if local {
+		if config.AuthGenAddr, exist = os.LookupEnv("AUTH_GENERATOR_ADDR_LOCAL"); !exist {
+			return nil, errors.New("the env [AUTH_GENERATOR_ADDR_LOCAL] does not exist")
 		}
 	}
 

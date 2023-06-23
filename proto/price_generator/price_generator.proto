@@ -5,15 +5,34 @@ package price_generator;
 
 option go_package = "github.com/bearatol/interview_golang_task/proto/price_generator";
 
-// ------------------
-// Ping
-// ------------------
-
 message Pong {
     string pong = 1;
 }
 
+message PriceFileSetRequest {
+    string barcode = 1;
+    string title = 2;
+    int32 cost = 3;
+}
+
+message PriceFilesRequest {
+    repeated string barcodes = 1;
+}
+
+
+message File {
+    string name = 1;
+    bytes content = 2;
+}
+message PriceFilesResponse {
+    repeated File files = 1;
+}
 
 service PriceGenerator {
     rpc Ping (google.protobuf.Empty) returns (Pong) {}
+
+
+    rpc Set (PriceFileSetRequest) returns (google.protobuf.Empty) {}
+    rpc Get (PriceFilesRequest) returns (PriceFilesResponse) {}
+    rpc Delete (PriceFilesRequest) returns (google.protobuf.Empty) {}
 }

@@ -24,6 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PriceGeneratorClient interface {
 	Ping(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Pong, error)
+	Set(ctx context.Context, in *PriceFileSetRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Get(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*PriceFilesResponse, error)
+	Delete(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type priceGeneratorClient struct {
@@ -43,11 +46,41 @@ func (c *priceGeneratorClient) Ping(ctx context.Context, in *empty.Empty, opts .
 	return out, nil
 }
 
+func (c *priceGeneratorClient) Set(ctx context.Context, in *PriceFileSetRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/price_generator.PriceGenerator/Set", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *priceGeneratorClient) Get(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*PriceFilesResponse, error) {
+	out := new(PriceFilesResponse)
+	err := c.cc.Invoke(ctx, "/price_generator.PriceGenerator/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *priceGeneratorClient) Delete(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/price_generator.PriceGenerator/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PriceGeneratorServer is the server API for PriceGenerator service.
 // All implementations must embed UnimplementedPriceGeneratorServer
 // for forward compatibility
 type PriceGeneratorServer interface {
 	Ping(context.Context, *empty.Empty) (*Pong, error)
+	Set(context.Context, *PriceFileSetRequest) (*empty.Empty, error)
+	Get(context.Context, *PriceFilesRequest) (*PriceFilesResponse, error)
+	Delete(context.Context, *PriceFilesRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedPriceGeneratorServer()
 }
 
@@ -57,6 +90,15 @@ type UnimplementedPriceGeneratorServer struct {
 
 func (UnimplementedPriceGeneratorServer) Ping(context.Context, *empty.Empty) (*Pong, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
+func (UnimplementedPriceGeneratorServer) Set(context.Context, *PriceFileSetRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Set not implemented")
+}
+func (UnimplementedPriceGeneratorServer) Get(context.Context, *PriceFilesRequest) (*PriceFilesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedPriceGeneratorServer) Delete(context.Context, *PriceFilesRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedPriceGeneratorServer) mustEmbedUnimplementedPriceGeneratorServer() {}
 
@@ -89,6 +131,60 @@ func _PriceGenerator_Ping_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PriceGenerator_Set_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceFileSetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PriceGeneratorServer).Set(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/price_generator.PriceGenerator/Set",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PriceGeneratorServer).Set(ctx, req.(*PriceFileSetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PriceGenerator_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceFilesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PriceGeneratorServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/price_generator.PriceGenerator/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PriceGeneratorServer).Get(ctx, req.(*PriceFilesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PriceGenerator_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceFilesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PriceGeneratorServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/price_generator.PriceGenerator/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PriceGeneratorServer).Delete(ctx, req.(*PriceFilesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PriceGenerator_ServiceDesc is the grpc.ServiceDesc for PriceGenerator service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -99,6 +195,18 @@ var PriceGenerator_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Ping",
 			Handler:    _PriceGenerator_Ping_Handler,
+		},
+		{
+			MethodName: "Set",
+			Handler:    _PriceGenerator_Set_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _PriceGenerator_Get_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _PriceGenerator_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
