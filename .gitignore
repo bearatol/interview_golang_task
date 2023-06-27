@@ -3,5 +3,6 @@
 
 vendor
 bin
+upload
 
 .env

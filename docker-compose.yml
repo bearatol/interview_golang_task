@@ -1,57 +1,45 @@
-version: '3.8'
+version: '3'
 
-name: "interview"
-
-networks:
-  net_price_gen:
-    driver: bridge
-  net_auth_gen:
-    driver: bridge
-  net_db:
-    driver: bridge
+name: "interview-task"
 
 services:
   core:
     build:
-      dockerfile: .
-      context: ./services/core
+      dockerfile: ./services/core/Dockerfile
+      context: ./
     container_name: core
-    restart: always
     ports:
       - 6001:6001
-    networks:
-      - net_price_gen
-      - net_auth_gen
-      - net_db
     depends_on:
       - price_generator
       - auth_generator
       - interview_db
     env_file: .env_example
+    command: sh -c "sleep 5 && make goose-up-docker && ./core"
   price_generator:
     build:
-      dockerfile: .
-      context: ./services/price_generator
+      dockerfile: ./services/price_generator/Dockerfile
+      context: ./
     container_name: price_generator
     restart: always
     ports:
       - 6002:6002
-    networks:
-      - net_price_gen
+    volumes:
+      - ./upload/price_pdf_files:/app/upload/price_pdf_files
+      - ./docs/price_generator:/app/docs/price_generator
     env_file: .env_example
   auth_generator:
-    image: andrianovartemii/gm-test-task-auth-generator:latest
+    image: andrianovartemii/gm-test-task-auth-generator:amd
+    container_name: auth_generator
+    restart: always
     ports:
       - 6003:8080
-    networks:
-      - net_auth_gen
     env_file: .env_example
+    platform: linux/arm64/v8
   interview_db:
     image: postgres:15.1-alpine3.17
     container_name: interview_db
     restart: always
     ports:
       - 6004:5432
-    networks:
-      - net_db
     env_file: .env_example
