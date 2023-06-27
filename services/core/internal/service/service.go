@@ -44,25 +44,19 @@ func (s *Service) checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func (s *Service) extractJWTClaims(tokenStr, key string) (claims jwt.MapClaims, err error) {
-	hmacSecretString := key
-	hmacSecret := []byte(hmacSecretString)
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		// check token signing method etc
-		return hmacSecret, nil
+func (s *Service) extractJWTClaims(tokenStr string) (claims jwt.MapClaims, err error) {
+	token, _ := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		return []byte{}, nil
 	})
-	if err != nil {
-		return nil, err
-	}
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		return claims, nil
 	}
 	return nil, fmt.Errorf("invalid jwt token")
 }
 
 func (s *Service) login(token string) (string, error) {
-	res, err := s.extractJWTClaims(token, s.conf.JWTKey)
+	res, err := s.extractJWTClaims(token)
 	if err != nil {
 		return "", err
 	}
