@@ -3,6 +3,7 @@ package auth_generator
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -41,6 +42,10 @@ func (a *AuthGenerator) getRemote(ctx context.Context, url, token string) ([]byt
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("invalid token from checker")
+	}
 
 	var b bytes.Buffer
 	if _, err := io.Copy(&b, resp.Body); err != nil {

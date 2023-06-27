@@ -33,7 +33,7 @@ func (r *Repository) PriceCreate(ctx context.Context, fileName, barcode string) 
 }
 func (r *Repository) PriceDelete(ctx context.Context, fileName string) error {
 	query := `
-	DELETE FROM ` + priceTableName + ` WHERE name = $1 AND product_barcode = $2
+	DELETE FROM ` + priceTableName + ` WHERE name = $1
 	`
 	_, err := r.db.ExecContext(ctx, query, fileName)
 	return err
