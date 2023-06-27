@@ -35,7 +35,7 @@ func main() {
 	}
 	log := logger.NewSugarLogger(zapLogger)
 
-	log.Error(run(ctx, conf, log))
+	log.Fatal(run(ctx, conf, log))
 
 	<-ctx.Done()
 }

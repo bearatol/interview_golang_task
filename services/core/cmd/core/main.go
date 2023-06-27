@@ -12,7 +12,6 @@ import (
 	priceGenRepo "github.com/bearatol/interview_golang_task/sevices/core/internal/grpc_conn/price_generator"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/handler"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/repository"
-	"github.com/bearatol/interview_golang_task/sevices/core/internal/repository/postgres"
 	authGenRepo "github.com/bearatol/interview_golang_task/sevices/core/internal/rest_conn/auth_generator"
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/service"
 	"go.uber.org/zap"
@@ -47,13 +46,13 @@ func main() {
 	}
 	log := logger.NewSugarLogger(zapLogger)
 
-	log.Error(run(ctx, conf, log))
+	log.Fatal(run(ctx, conf, log))
 
 	<-ctx.Done()
 }
 
 func run(ctx context.Context, conf *config.Config, log *zap.SugaredLogger) error {
-	db, err := postgres.NewPGConn(conf.DB)
+	db, err := repository.NewPGConn(conf.DB)
 	if err != nil {
 		return err
 	}
@@ -65,10 +64,16 @@ func run(ctx context.Context, conf *config.Config, log *zap.SugaredLogger) error
 		return err
 	}
 	defer priceGen.Conn.Close()
+	if err := priceGen.PriceFile.Ping(ctx); err != nil {
+		return err
+	}
 
-	authGen := authGenRepo.NewAuthGenerator(conf.AuthGenAddr)
+	authGen, err := authGenRepo.NewAuthGenerator(ctx, conf.AuthGenAddr)
+	if err != nil {
+		return err
+	}
 
-	serv := service.NewService(repo, priceGen.PriceFile, authGen)
+	serv := service.NewService(conf, repo, priceGen.PriceFile, authGen)
 	handl := handler.NewHandler(ctx, log, serv)
 	router := handl.SetupRouter()
 

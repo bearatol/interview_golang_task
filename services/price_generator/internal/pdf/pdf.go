@@ -8,13 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/bearatol/interview_golang_task/sevices/price_generator/internal/config"
-	"github.com/bearatol/interview_golang_task/sevices/price_generator/internal/mapping"
 	"github.com/signintech/gopdf"
 )
 
@@ -41,6 +38,7 @@ type PDF struct {
 }
 
 func NewPDF(conf *config.Config) (p *PDF, err error) {
+	p = &PDF{}
 	path, err := os.Getwd()
 	if err != nil {
 		return
@@ -197,57 +195,19 @@ func (p *PDF) createPDF(barcode, title string, cost int32) ([]byte, error) {
 	return pdf.GetBytesPdf(), nil
 }
 
-func (p *PDF) Set(barcode, title string, cost int32) error {
+func (p *PDF) Set(fileName, barcode, title string, cost int32) error {
 	pdf, err := p.createPDF(barcode, title, cost)
 	if err != nil {
 		return err
 	}
-	date := time.Now().Format("01-02-2006")
-	return os.WriteFile(fmt.Sprintf("doc_%s_%s.pdf", barcode, date), pdf, 0644)
+
+	return os.WriteFile(p.DirStore+"/"+fileName, pdf, 0644)
 }
 
-func (p *PDF) Get(barcodes []string) ([]*mapping.PriceFile, error) {
-	priceFildes := make([]*mapping.PriceFile, 0, len(barcodes))
-
-	err := filepath.Walk(p.DirStore, func(path string, info os.FileInfo, err error) error {
-		name := info.Name()
-		nameList := strings.Split(name, "_")
-		if len(nameList) < 2 && info.IsDir() {
-			for _, b := range barcodes {
-				if b == nameList[1] {
-					content, err := os.ReadFile(path)
-					if err != nil {
-						return err
-					}
-					priceFildes = append(priceFildes, &mapping.PriceFile{
-						Name:    info.Name(),
-						Content: content,
-					})
-					break
-				}
-			}
-		}
-		return nil
-	})
-
-	return priceFildes, err
+func (p *PDF) Get(fileName string) ([]byte, error) {
+	return os.ReadFile(p.DirStore + "/" + fileName)
 }
 
-func (p *PDF) Delete(barcodes []string) error {
-	return filepath.Walk(p.DirStore, func(path string, info os.FileInfo, err error) error {
-		name := info.Name()
-		nameList := strings.Split(name, "_")
-		if len(nameList) < 2 && info.IsDir() {
-			for _, b := range barcodes {
-				if b == nameList[1] {
-					err := os.Remove(path)
-					if err != nil {
-						return err
-					}
-					break
-				}
-			}
-		}
-		return nil
-	})
+func (p *PDF) Delete(fileName string) error {
+	return os.Remove(p.DirStore + "/" + fileName)
 }

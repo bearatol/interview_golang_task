@@ -12,6 +12,8 @@ type Config struct {
 	PriceGenAdd string
 	AuthGenAddr string
 	AppAddr     string
+
+	JWTKey string
 }
 
 type Postgres struct {
@@ -27,7 +29,7 @@ func NewConfig(local bool) (*Config, error) {
 		exist  bool
 		env    string
 		err    error
-		config = &Config{}
+		config = &Config{DB: new(Postgres)}
 	)
 	if config.DB.PostgresUser, exist = os.LookupEnv("POSTGRES_USER"); !exist {
 		return nil, errors.New("the env [POSTGRES_USER] does not exist")
@@ -89,6 +91,10 @@ func NewConfig(local bool) (*Config, error) {
 
 	if config.AppAddr, exist = os.LookupEnv("CORE_ADDR"); !exist {
 		return nil, errors.New("the env [CORE_ADDR] does not exist")
+	}
+
+	if config.JWTKey, exist = os.LookupEnv("JWT_KEY"); !exist {
+		return nil, errors.New("the env [JWT_KEY] does not exist")
 	}
 
 	return config, nil

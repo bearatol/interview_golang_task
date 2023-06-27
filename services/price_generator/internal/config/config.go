@@ -29,8 +29,8 @@ type PDFConfig struct {
 func NewConfig() (*Config, error) {
 	var (
 		exist  bool
-		config = &Config{}
 		env    string
+		config = &Config{PDFConfig: new(PDFConfig)}
 	)
 
 	if config.AppAddr, exist = os.LookupEnv("PRICE_GENERATOR_ADDR_LOCAL"); !exist {

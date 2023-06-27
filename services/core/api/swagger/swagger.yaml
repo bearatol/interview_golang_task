@@ -1,4 +1,87 @@
 basePath: /api/v1
+definitions:
+  handler.errorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  handler.successResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  mapping.FileData:
+    properties:
+      barcode:
+        type: string
+      cost:
+        type: integer
+      title:
+        type: string
+    type: object
+  mapping.Product:
+    properties:
+      barcode:
+        type: string
+      cost:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  mapping.ProductAvailableFileds:
+    properties:
+      barcode:
+        type: string
+      cost:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  mapping.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  mapping.UserAvailableFileds:
+    properties:
+      email:
+        type: string
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  mapping.UserToken:
+    properties:
+      token:
+        type: string
+    type: object
 host: localhost:6001
 info:
   contact: {}
@@ -17,4 +100,297 @@ paths:
       summary: Ping handler
       tags:
       - ping
+  /products:
+    delete:
+      description: delete product
+      parameters:
+      - description: barcode
+        in: query
+        name: barcode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete product
+      tags:
+      - products
+    get:
+      description: get products information
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/mapping.Product'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get products information
+      tags:
+      - products
+    post:
+      description: create product
+      parameters:
+      - description: product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/mapping.ProductAvailableFileds'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create product
+      tags:
+      - products
+    put:
+      description: update product
+      parameters:
+      - description: product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/mapping.ProductAvailableFileds'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update product
+      tags:
+      - products
+  /products/prices:
+    delete:
+      description: delete price files
+      parameters:
+      - description: file name of a price
+        in: query
+        name: filename
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete price files
+      tags:
+      - prices
+    get:
+      description: get all prices files by one product
+      parameters:
+      - description: barcode of product
+        in: query
+        name: barcode
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all prices files by one product
+      tags:
+      - prices
+    post:
+      description: create price file
+      parameters:
+      - description: file data
+        in: body
+        name: filedata
+        required: true
+        schema:
+          $ref: '#/definitions/mapping.FileData'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create price file
+      tags:
+      - prices
+  /products/prices/{file}:
+    get:
+      description: get file of price by name
+      parameters:
+      - description: name of file
+        in: path
+        name: file
+        required: true
+        type: string
+      produces:
+      - application/pdf
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get file of price by name
+      tags:
+      - prices
+  /users:
+    delete:
+      description: delete user
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - users
+    get:
+      description: get user information
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mapping.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user information
+      tags:
+      - users
+    put:
+      description: update user
+      parameters:
+      - description: user data
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/mapping.UserAvailableFileds'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - users
+  /users/auth:
+    get:
+      description: auth user
+      parameters:
+      - description: login
+        in: query
+        name: login
+        required: true
+        type: string
+      - description: password
+        in: query
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mapping.UserToken'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Auth
+      tags:
+      - users
+  /users/regis:
+    post:
+      description: registration user
+      parameters:
+      - description: user data
+        in: body
+        name: registration
+        required: true
+        schema:
+          $ref: '#/definitions/mapping.UserAvailableFileds'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mapping.UserToken'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Registration
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    description: 'Type ''Bearer TOKEN'' to correctly set the API Key. Example: Bearer
+      <access_token>'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

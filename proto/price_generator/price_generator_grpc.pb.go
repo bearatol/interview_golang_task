@@ -25,8 +25,8 @@ const _ = grpc.SupportPackageIsVersion7
 type PriceGeneratorClient interface {
 	Ping(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Pong, error)
 	Set(ctx context.Context, in *PriceFileSetRequest, opts ...grpc.CallOption) (*empty.Empty, error)
-	Get(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*PriceFilesResponse, error)
-	Delete(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Get(ctx context.Context, in *PriceFileRequest, opts ...grpc.CallOption) (*PriceFileResponse, error)
+	Delete(ctx context.Context, in *PriceFileRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type priceGeneratorClient struct {
@@ -55,8 +55,8 @@ func (c *priceGeneratorClient) Set(ctx context.Context, in *PriceFileSetRequest,
 	return out, nil
 }
 
-func (c *priceGeneratorClient) Get(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*PriceFilesResponse, error) {
-	out := new(PriceFilesResponse)
+func (c *priceGeneratorClient) Get(ctx context.Context, in *PriceFileRequest, opts ...grpc.CallOption) (*PriceFileResponse, error) {
+	out := new(PriceFileResponse)
 	err := c.cc.Invoke(ctx, "/price_generator.PriceGenerator/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *priceGeneratorClient) Get(ctx context.Context, in *PriceFilesRequest, o
 	return out, nil
 }
 
-func (c *priceGeneratorClient) Delete(ctx context.Context, in *PriceFilesRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *priceGeneratorClient) Delete(ctx context.Context, in *PriceFileRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/price_generator.PriceGenerator/Delete", in, out, opts...)
 	if err != nil {
@@ -79,8 +79,8 @@ func (c *priceGeneratorClient) Delete(ctx context.Context, in *PriceFilesRequest
 type PriceGeneratorServer interface {
 	Ping(context.Context, *empty.Empty) (*Pong, error)
 	Set(context.Context, *PriceFileSetRequest) (*empty.Empty, error)
-	Get(context.Context, *PriceFilesRequest) (*PriceFilesResponse, error)
-	Delete(context.Context, *PriceFilesRequest) (*empty.Empty, error)
+	Get(context.Context, *PriceFileRequest) (*PriceFileResponse, error)
+	Delete(context.Context, *PriceFileRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedPriceGeneratorServer()
 }
 
@@ -94,10 +94,10 @@ func (UnimplementedPriceGeneratorServer) Ping(context.Context, *empty.Empty) (*P
 func (UnimplementedPriceGeneratorServer) Set(context.Context, *PriceFileSetRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Set not implemented")
 }
-func (UnimplementedPriceGeneratorServer) Get(context.Context, *PriceFilesRequest) (*PriceFilesResponse, error) {
+func (UnimplementedPriceGeneratorServer) Get(context.Context, *PriceFileRequest) (*PriceFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedPriceGeneratorServer) Delete(context.Context, *PriceFilesRequest) (*empty.Empty, error) {
+func (UnimplementedPriceGeneratorServer) Delete(context.Context, *PriceFileRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedPriceGeneratorServer) mustEmbedUnimplementedPriceGeneratorServer() {}
@@ -150,7 +150,7 @@ func _PriceGenerator_Set_Handler(srv interface{}, ctx context.Context, dec func(
 }
 
 func _PriceGenerator_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PriceFilesRequest)
+	in := new(PriceFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -162,13 +162,13 @@ func _PriceGenerator_Get_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/price_generator.PriceGenerator/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PriceGeneratorServer).Get(ctx, req.(*PriceFilesRequest))
+		return srv.(PriceGeneratorServer).Get(ctx, req.(*PriceFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _PriceGenerator_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PriceFilesRequest)
+	in := new(PriceFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func _PriceGenerator_Delete_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/price_generator.PriceGenerator/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PriceGeneratorServer).Delete(ctx, req.(*PriceFilesRequest))
+		return srv.(PriceGeneratorServer).Delete(ctx, req.(*PriceFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
