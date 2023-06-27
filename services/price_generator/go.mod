@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/bearatol/interview_golang_task/pkg v0.0.0-20230620142024-8606cc11ecbe
 	github.com/bearatol/interview_golang_task/proto v0.0.0-20230620142024-8606cc11ecbe
+	github.com/bearatol/lg v1.3.0
 	github.com/go-playground/assert/v2 v2.2.0
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3

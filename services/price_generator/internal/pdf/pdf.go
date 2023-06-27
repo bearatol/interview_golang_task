@@ -17,7 +17,7 @@ import (
 
 type PDF struct {
 	DirStore  string
-	FontFile  io.Reader
+	FontFile  []byte
 	ImageFile image.Image
 
 	FontSize,
@@ -51,7 +51,11 @@ func NewPDF(conf *config.Config) (p *PDF, err error) {
 	} else if err != nil {
 		return
 	}
-	p.FontFile, err = p.getFont(fmt.Sprintf("%s/%s", path, conf.PDFConfig.FontPath))
+	fontFile, err := p.getFont(fmt.Sprintf("%s/%s", path, conf.PDFConfig.FontPath))
+	if err != nil {
+		return
+	}
+	p.FontFile, err = io.ReadAll(fontFile)
 	if err != nil {
 		return
 	}
@@ -164,7 +168,7 @@ func (p *PDF) createPDF(barcode, title string, cost int32) ([]byte, error) {
 	defer pdf.Close()
 
 	pdf.AddPage()
-	if err := pdf.AddTTFFontByReader("font", p.FontFile); err != nil {
+	if err := pdf.AddTTFFontByReader("font", bytes.NewReader(p.FontFile)); err != nil {
 		return nil, err
 	}
 	err := pdf.ImageFrom(p.ImageFile, p.ImageX, p.BarcodeY, p.ImageSize)
@@ -205,9 +209,17 @@ func (p *PDF) Set(fileName, barcode, title string, cost int32) error {
 }
 
 func (p *PDF) Get(fileName string) ([]byte, error) {
-	return os.ReadFile(p.DirStore + "/" + fileName)
+	res, err := os.ReadFile(p.DirStore + "/" + fileName)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *PDF) Delete(fileName string) error {
-	return os.Remove(p.DirStore + "/" + fileName)
+	err := os.Remove(p.DirStore + "/" + fileName)
+	if err != nil {
+		return err
+	}
+	return nil
 }

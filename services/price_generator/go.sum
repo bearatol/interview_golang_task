@@ -2,6 +2,8 @@ github.com/bearatol/interview_golang_task/pkg v0.0.0-20230620142024-8606cc11ecbe
 github.com/bearatol/interview_golang_task/pkg v0.0.0-20230620142024-8606cc11ecbe/go.mod h1:zNo3UjAnqXvRT5aktgHDLsX5ZQRP7lpwnL+wTDxMPC0=
 github.com/bearatol/interview_golang_task/proto v0.0.0-20230620142024-8606cc11ecbe h1:auiwyyXjxNgQ3POndTH2Sed40Bjpy7gc0QFB6gL9T7M=
 github.com/bearatol/interview_golang_task/proto v0.0.0-20230620142024-8606cc11ecbe/go.mod h1:JIvzS+Ml42hv81WFrSfa7d+vNkaiZ9U28U7909CctI0=
+github.com/bearatol/lg v1.3.0 h1:SLvjqA0P/ZbVZS0oldr+9xiR5oY3NrR6MeUBi9EHmNI=
+github.com/bearatol/lg v1.3.0/go.mod h1:X/V4cw+NWpIAbwn9peCsN6k58QyZIJeRVJVsUOLXGvY=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=

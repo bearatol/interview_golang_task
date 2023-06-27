@@ -12,8 +12,6 @@ type Config struct {
 	PriceGenAdd string
 	AuthGenAddr string
 	AppAddr     string
-
-	JWTKey string
 }
 
 type Postgres struct {
@@ -91,10 +89,6 @@ func NewConfig(local bool) (*Config, error) {
 
 	if config.AppAddr, exist = os.LookupEnv("CORE_ADDR"); !exist {
 		return nil, errors.New("the env [CORE_ADDR] does not exist")
-	}
-
-	if config.JWTKey, exist = os.LookupEnv("JWT_KEY"); !exist {
-		return nil, errors.New("the env [JWT_KEY] does not exist")
 	}
 
 	return config, nil
