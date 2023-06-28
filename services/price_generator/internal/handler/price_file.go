@@ -27,9 +27,6 @@ func (h *Handler) Set(ctx context.Context, in *pb.PriceFileSetRequest) (*empty.E
 	if len(in.Title) == 0 {
 		return &emptypb.Empty{}, h.errResp(fmt.Errorf("incorect inner data: title"))
 	}
-	if in.Cost == 0 {
-		return &emptypb.Empty{}, h.errResp(fmt.Errorf("incorect inner data: cost"))
-	}
 
 	return &empty.Empty{}, h.servPriceFile.SetFile(in.FileName, in.Barcode, in.Title, in.Cost)
 }

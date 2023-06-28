@@ -31,10 +31,15 @@ func (r *Repository) PriceCreate(ctx context.Context, fileName, barcode string) 
 	_, err := r.db.ExecContext(ctx, query, fileName, barcode)
 	return err
 }
-func (r *Repository) PriceDelete(ctx context.Context, fileName string) error {
-	query := `
-	DELETE FROM ` + priceTableName + ` WHERE name = $1 AND product_barcode = $2
+func (r *Repository) PriceDelete(ctx context.Context, fileName string) (barcode string, err error) {
+	query := `SELECT product_barcode FROM ` + priceTableName + ` WHERE name = $1`
+	if err = r.db.GetContext(ctx, &barcode, query, fileName); err != nil {
+		return
+	}
+
+	query = `
+	DELETE FROM ` + priceTableName + ` WHERE name = $1
 	`
-	_, err := r.db.ExecContext(ctx, query, fileName)
-	return err
+	_, err = r.db.ExecContext(ctx, query, fileName)
+	return
 }

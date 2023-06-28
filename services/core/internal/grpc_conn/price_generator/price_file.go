@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	pb "github.com/bearatol/interview_golang_task/proto/price_generator"
+	"github.com/bearatol/lg"
 	"github.com/golang/protobuf/ptypes/empty"
 
 	"github.com/bearatol/interview_golang_task/sevices/core/internal/mapping"
@@ -39,12 +40,17 @@ func (f *priceFile) Create(ctx context.Context, fileName, barcode, title string,
 	if len(title) == 0 {
 		return fmt.Errorf("title is empty")
 	}
+
+	lg.Debugf("%+v/n", f.Ping(ctx))
+
 	_, err := f.client.Set(ctx, &pb.PriceFileSetRequest{
 		FileName: fileName,
 		Barcode:  barcode,
 		Title:    title,
 		Cost:     cost,
 	})
+
+	lg.Debug(err)
 
 	return err
 }

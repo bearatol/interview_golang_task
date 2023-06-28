@@ -11,7 +11,7 @@ import (
 type RepoPrices interface {
 	PricesGet(ctx context.Context, barcode string) ([]string, error)
 	PriceCreate(ctx context.Context, fileName, barcode string) error
-	PriceDelete(ctx context.Context, fileName string) error
+	PriceDelete(ctx context.Context, fileName string) (barcode string, err error)
 }
 
 type PriceGenerator interface {
@@ -31,7 +31,7 @@ func (s *Service) PriceCreate(ctx context.Context, fileData *mapping.FileData) e
 
 	err = s.priceGen.Create(ctx, fileName, fileData.Barcode, fileData.Title, fileData.Cost)
 	if err != nil {
-		if err := s.repoPrices.PriceDelete(ctx, fileName); err != nil {
+		if _, err := s.repoPrices.PriceDelete(ctx, fileName); err != nil {
 			return err
 		}
 		return err
@@ -48,9 +48,16 @@ func (s *Service) PricesGetFile(ctx context.Context, fileName string) ([]byte, e
 }
 
 func (s *Service) PriceDelete(ctx context.Context, fileName string) error {
-	err := s.priceGen.Delete(ctx, fileName)
+	barcode, err := s.repoPrices.PriceDelete(ctx, fileName)
 	if err != nil {
 		return err
 	}
-	return s.repoPrices.PriceDelete(ctx, fileName)
+	err = s.priceGen.Delete(ctx, fileName)
+	if err != nil {
+		if s.repoPrices.PriceCreate(ctx, fileName, barcode) != nil {
+			return err
+		}
+		return err
+	}
+	return nil
 }
